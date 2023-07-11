@@ -20,6 +20,7 @@ Then, create a `.env.local` file with the following contents:
 
 ```bash
 # .env.local
+NEXT_PUBLIC_SCOPE=your-client-scope # from: https://api.slack.com/apps/A05GLH2TPT3/oauth
 NEXT_PUBLIC_CLIENT_ID=your-client-id # from: https://api.slack.com/apps/A05GLH2TPT3/general
 CLIENT_SECRET=your-client-secret # from: https://api.slack.com/apps/A05GLH2TPT3/general
 ```

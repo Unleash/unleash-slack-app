@@ -3,7 +3,7 @@ import Image from 'next/image'
 export const Install = () => (
   <div className='flex justify-center items-center mt-6'>
     <a
-      href={`https://slack.com/oauth/v2/authorize?client_id=${process.env.NEXT_PUBLIC_CLIENT_ID}&scope=channels:read,chat:write,chat:write.public,groups:read`}
+      href={`https://slack.com/oauth/v2/authorize?client_id=${process.env.NEXT_PUBLIC_CLIENT_ID}&scope=${process.env.NEXT_PUBLIC_SCOPE}`}
     >
       <Image
         alt='Add to Slack'
