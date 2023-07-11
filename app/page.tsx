@@ -37,7 +37,7 @@ export default async function Home({
       {error && (
         <div className='p-4 bg-red-500 text-white rounded-md mb-4'>{error}</div>
       )}
-      <div className='pt-40 p-4 flex-1 md:flex-grow-0 md:p-12 bg-unleash-secondary text-white md:rounded-xl drop-shadow-md'>
+      <div className='max-w-4xl pt-40 p-4 flex-1 md:flex-grow-0 md:p-12 bg-unleash-secondary text-white md:rounded-xl drop-shadow-md'>
         <div className='flex flex-col md:flex-row justify-center items-center gap-2'>
           <Image
             src='/unleash_logo.svg'
