@@ -40,7 +40,7 @@ export default async function Home({
       <div className='pt-40 p-4 flex-1 md:flex-grow-0 md:p-12 bg-unleash-secondary text-white md:rounded-xl drop-shadow-md'>
         <div className='flex flex-col md:flex-row justify-center items-center gap-2'>
           <Image
-            src='/unleash-logo.svg'
+            src='/unleash_logo.svg'
             alt='Unleash Logo'
             width={100}
             height={100}
@@ -48,8 +48,8 @@ export default async function Home({
           <div className='flex flex-col justify-center ml-8'>
             <h1 className='text-2xl font-bold'>Unleash</h1>
             <p className='text-gray-400'>
-              Add Unleash to your Slack workspace by using Unleash's official
-              Slack App.
+              Add Unleash to your Slack workspace by using Unleash&apos;s
+              official Slack App.
             </p>
           </div>
         </div>
@@ -58,7 +58,7 @@ export default async function Home({
       <div className='fixed p-4 top-0 bg-unleash-background w-full'>
         <a href='https://www.getunleash.io/' target='_blank' rel='noreferrer'>
           <Image
-            src='https://www.getunleash.io/logos/unleash_pos.svg'
+            src='/unleash_pos.svg'
             alt='Unleash Logo'
             className='w-36 h-12 md:w-72 md:h-24'
             width={200}
