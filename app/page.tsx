@@ -49,7 +49,7 @@ export default async function Home({
             <h1 className='text-2xl font-bold'>Unleash</h1>
             <p className='text-gray-400'>
               Add Unleash to your Slack workspace by using Unleash&apos;s
-              official Slack App.
+              official App for Slack.
             </p>
           </div>
         </div>

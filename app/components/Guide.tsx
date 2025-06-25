@@ -38,8 +38,8 @@ export const Guide = ({ access_token }: IGuideProps) => {
       </div>
       <p>
         You should copy this access token and paste it in the{' '}
-        <b>Access token</b> field you&apos;ll find in the Slack App integration
-        configuration inside your Unleash instance.
+        <b>Access token</b> field you&apos;ll find in the App for Slack
+        integration configuration inside your Unleash instance.
       </p>
     </div>
   )

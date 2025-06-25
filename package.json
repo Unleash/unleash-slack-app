@@ -1,6 +1,6 @@
 {
   "name": "unleash-slack-app",
-  "description": "Add Unleash to your Slack workspace by using Unleash's official Slack App.",
+  "description": "Add Unleash to your Slack workspace by using Unleash's official App for Slack.",
   "version": "0.1.0",
   "private": true,
   "scripts": {
