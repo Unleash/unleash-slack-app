@@ -60,7 +60,7 @@ export default async function Home({
         </Link>
       </header>
 
-      <section className='flex-1 flex flex-col items-center justify-center px-4 py-16'>
+      <section className='flex flex-col items-center justify-center px-4 mt-16 mb-8'>
         {error && (
           <div className='p-4 bg-red-500 text-white rounded-md mb-4'>
             {error}
@@ -78,55 +78,115 @@ export default async function Home({
             <div>
               <h1 className='text-3xl font-bold'>Unleash App for Slack</h1>
               <p className='text-gray-300 mt-1 text-sm'>
-                Get real-time feature flag and change notifications directly in
-                Slack. Stay in sync with your team, effortlessly.
+                Connect Unleash to Slack and stay updated on every change, right
+                where your team works.
               </p>
             </div>
           </div>
 
-          <div className='my-4'>
+          <div className='mt-4 mb-8'>
             {access_token ? <Guide access_token={access_token} /> : <Install />}
           </div>
 
           <div className='text-gray-300 text-sm leading-relaxed'>
-            <h2 className='text-lg text-white font-semibold mb-2'>
+            <p>
+              The Unleash App for Slack brings real-time feature flag updates
+              and change notifications directly to your Slack workspace, helping
+              teams stay in sync and move faster.
+            </p>
+            <h2 className='text-lg text-white font-semibold mt-4 mb-2'>
               How it works:
             </h2>
-            <ul className='list-disc list-inside mb-4'>
+            <ul className='list-disc list-inside space-y-1'>
               <li>
-                🔔 Get alerts when feature flags are created, updated, enabled
-                or disabled.
+                🔔 Receive instant alerts when feature flags are created,
+                updated, enabled, disabled, or tagged
               </li>
               <li>
-                🔧 Monitor changes to projects, strategies, environments, and
-                more.
+                🔧 Monitor changes to projects, environments, strategies, users,
+                service accounts, and more
               </li>
               <li>
-                🏷️ Tag flags with e.g. <code>slack:general</code> to send
-                updates to specific channels.
+                ✅ Stay on top of change requests, Unleash's approval workflow
+                for safe, auditable flag changes
               </li>
-              <li>✅ Stay on top of change requests and approvals.</li>
+              <li>
+                🏷️ Target specific channels using "slack" tags on feature flags
+                (e.g. <code>slack:general</code>)
+              </li>
+              <li>
+                🔄 Customize alerts by project, environment, and event type
+              </li>
+              <li>
+                🔐 Works with both public and private channels (just invite the
+                app to private ones)
+              </li>
             </ul>
-            <p>
-              After installing the App for Slack, copy your access token and
-              paste it into the integration settings inside Unleash. Then choose
-              your events and channels. That's it.
-            </p>
-            <p className='mt-4'>
-              Read more in our{' '}
-              <Link
-                href='https://docs.getunleash.io/reference/integrations/slack-app'
-                className='underline'
-              >
-                documentation
-              </Link>
-              .
-            </p>
           </div>
         </div>
       </section>
 
-      <footer className='w-full text-center text-gray-500 text-xs py-4'>
+      <section className='w-full text-gray-800 px-4'>
+        <div className='max-w-3xl mx-auto text-sm'>
+          <h2 className='text-xl font-semibold mt-4 mb-2'>How to set it up</h2>
+          <ol className='list-decimal list-inside space-y-1'>
+            <li>Click "Add to Slack" and select your workspace.</li>
+            <li>
+              After installation, copy the access token shown on this page.
+            </li>
+            <li>
+              Go to <code>Unleash → Integrations → App for Slack</code> in the
+              admin UI.
+            </li>
+            <li>
+              Paste your access token and choose the events you'd like to be
+              notified about.
+            </li>
+          </ol>
+
+          <h3 className='text-lg font-medium mt-6 mb-2'>
+            Additional configuration details
+          </h3>
+          <ul className='list-disc list-inside space-y-1'>
+            <li>
+              The app can only post to private channels if you manually invite
+              it to each one.
+            </li>
+            <li>
+              You can configure a comma-separated list of channels to always
+              receive notifications.
+            </li>
+            <li>
+              Feature flags can also include Slack-specific tags (e.g.{' '}
+              <code>slack:general</code>) to target additional channels.
+            </li>
+            <li>
+              If no channels are configured, only the tagged channels will
+              receive notifications.
+            </li>
+            <li>
+              You can filter events by project and environment to fine-tune your
+              notifications.
+            </li>
+            <li>
+              Multiple integration configurations are supported, so you can
+              tailor settings for different teams or use cases.
+            </li>
+          </ul>
+          <p className='mt-8'>
+            Read more in our{' '}
+            <Link
+              href='https://docs.getunleash.io/reference/integrations/slack-app'
+              className='underline'
+            >
+              documentation
+            </Link>
+            .
+          </p>
+        </div>
+      </section>
+
+      <footer className='w-full text-center text-gray-500 text-xs py-4 mt-auto'>
         <Link
           href='https://www.getunleash.io/privacy-policy'
           className='underline'
