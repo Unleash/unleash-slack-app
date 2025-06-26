@@ -50,7 +50,11 @@ export default async function Home({
   return (
     <main className='flex flex-col min-h-screen bg-unleash-background'>
       <header className='w-full p-4 flex flex-col sm:flex-row justify-between items-center'>
-        <Link href='https://www.getunleash.io/' target='_blank' rel='noopener noreferrer'>
+        <Link
+          href='https://www.getunleash.io/'
+          target='_blank'
+          rel='noopener noreferrer'
+        >
           <Image
             src='/unleash_pos.svg'
             alt='Unleash Logo'
@@ -108,12 +112,12 @@ export default async function Home({
                   users, service accounts and more
                 </li>
                 <li>
-                  ✅ Stay on top of change requests, Unleash's approval workflow
-                  for safe, auditable flag changes
+                  ✅ Stay on top of change requests, Unleash&apos;s approval
+                  workflow for safe, auditable flag changes
                 </li>
                 <li>
-                  🏷️ Target specific channels using "slack" tags on feature
-                  flags (e.g. <code>slack:general</code>)
+                  🏷️ Target specific channels using &quot;slack&quot; tags on
+                  feature flags (e.g. <code>slack:general</code>)
                 </li>
                 <li>
                   🔄 Customize alerts by project, environment, and event type
@@ -132,7 +136,7 @@ export default async function Home({
         <div className='max-w-3xl mx-auto text-sm'>
           <h2 className='text-xl font-semibold mt-4 mb-2'>How to set it up</h2>
           <ol className='list-decimal list-inside space-y-1'>
-            <li>Click "Add to Slack" and select your workspace</li>
+            <li>Click &quot;Add to Slack&quot; and select your workspace</li>
             <li>
               After installation, copy the access token shown on this page
             </li>
@@ -142,7 +146,7 @@ export default async function Home({
             </li>
             <li>
               Paste your access token into the integration settings and select
-              the events you'd like to be notified about
+              the events you&apos;d like to be notified about
             </li>
           </ol>
 
