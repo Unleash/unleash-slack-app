@@ -49,7 +49,7 @@ export default async function Home({
 
   return (
     <main className='flex flex-col min-h-screen bg-unleash-background'>
-      <header className='w-full p-4 flex justify-between items-center'>
+      <header className='w-full p-4 flex flex-col sm:flex-row justify-between items-center'>
         <Link href='https://www.getunleash.io/' target='_blank'>
           <Image
             src='/unleash_pos.svg'
@@ -67,8 +67,8 @@ export default async function Home({
           </div>
         )}
 
-        <div className='max-w-3xl bg-unleash-secondary text-white p-8 rounded-xl drop-shadow-md'>
-          <div className='flex items-center gap-4'>
+        <div className='max-w-3xl bg-unleash-secondary text-white p-8 rounded-2xl drop-shadow-md'>
+          <div className='flex flex-col text-center sm:flex-row sm:text-left items-center gap-4'>
             <Image
               src='/unleash_logo.svg'
               alt='Unleash Logo'
@@ -84,45 +84,47 @@ export default async function Home({
             </div>
           </div>
 
-          <div className='mt-4 mb-8'>
+          <div className='flex justify-center mt-6 mb-8'>
             {access_token ? <Guide access_token={access_token} /> : <Install />}
           </div>
 
-          <div className='text-gray-300 text-sm leading-relaxed'>
-            <p>
-              The Unleash App for Slack brings real-time feature flag updates
-              and change notifications directly to your Slack workspace, helping
-              teams stay in sync and move faster.
-            </p>
-            <h2 className='text-lg text-white font-semibold mt-4 mb-2'>
-              How it works:
-            </h2>
-            <ul className='list-disc list-inside space-y-1'>
-              <li>
-                🔔 Receive instant alerts when feature flags are created,
-                updated, enabled, disabled, or tagged
-              </li>
-              <li>
-                🔧 Monitor changes to projects, environments, strategies, users,
-                service accounts, and more
-              </li>
-              <li>
-                ✅ Stay on top of change requests, Unleash's approval workflow
-                for safe, auditable flag changes
-              </li>
-              <li>
-                🏷️ Target specific channels using "slack" tags on feature flags
-                (e.g. <code>slack:general</code>)
-              </li>
-              <li>
-                🔄 Customize alerts by project, environment, and event type
-              </li>
-              <li>
-                🔐 Works with both public and private channels (just invite the
-                app to private ones)
-              </li>
-            </ul>
-          </div>
+          {!access_token && (
+            <div className='text-gray-300 text-sm leading-relaxed'>
+              <p>
+                The Unleash App for Slack brings real-time feature flag updates
+                and change notifications directly to your Slack workspace,
+                helping teams stay in sync and move faster.
+              </p>
+              <h2 className='text-lg text-white font-semibold mt-4 mb-2'>
+                How it works
+              </h2>
+              <ul className='list-disc list-inside space-y-1'>
+                <li>
+                  🔔 Receive instant alerts when feature flags are created,
+                  updated, enabled, disabled, or tagged
+                </li>
+                <li>
+                  🔧 Monitor changes to projects, environments, strategies,
+                  users, service accounts and more
+                </li>
+                <li>
+                  ✅ Stay on top of change requests, Unleash's approval workflow
+                  for safe, auditable flag changes
+                </li>
+                <li>
+                  🏷️ Target specific channels using "slack" tags on feature
+                  flags (e.g. <code>slack:general</code>)
+                </li>
+                <li>
+                  🔄 Customize alerts by project, environment, and event type
+                </li>
+                <li>
+                  🔐 Works with both public and private channels (just invite
+                  the app to private ones)
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
       </section>
 
@@ -130,17 +132,17 @@ export default async function Home({
         <div className='max-w-3xl mx-auto text-sm'>
           <h2 className='text-xl font-semibold mt-4 mb-2'>How to set it up</h2>
           <ol className='list-decimal list-inside space-y-1'>
-            <li>Click "Add to Slack" and select your workspace.</li>
+            <li>Click "Add to Slack" and select your workspace</li>
             <li>
-              After installation, copy the access token shown on this page.
+              After installation, copy the access token shown on this page
             </li>
             <li>
               Go to <code>Unleash → Integrations → App for Slack</code> in the
-              admin UI.
+              admin UI
             </li>
             <li>
-              Paste your access token and choose the events you'd like to be
-              notified about.
+              Paste your access token into the integration settings and select
+              the events you'd like to be notified about
             </li>
           </ol>
 
@@ -150,27 +152,27 @@ export default async function Home({
           <ul className='list-disc list-inside space-y-1'>
             <li>
               The app can only post to private channels if you manually invite
-              it to each one.
+              it to each one
             </li>
             <li>
               You can configure a comma-separated list of channels to always
-              receive notifications.
+              receive notifications
             </li>
             <li>
               Feature flags can also include Slack-specific tags (e.g.{' '}
-              <code>slack:general</code>) to target additional channels.
+              <code>slack:general</code>) to target additional channels
             </li>
             <li>
               If no channels are configured, only the tagged channels will
-              receive notifications.
+              receive notifications
             </li>
             <li>
               You can filter events by project and environment to fine-tune your
-              notifications.
+              notifications
             </li>
             <li>
               Multiple integration configurations are supported, so you can
-              tailor settings for different teams or use cases.
+              tailor settings for different teams or use cases
             </li>
           </ul>
           <p className='mt-8'>
