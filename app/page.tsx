@@ -16,8 +16,11 @@ const getAccessToken = async (code: string): Promise<string | undefined> => {
   return access_token
 }
 
-const validateState = (state: string, storedState?: string) => {
-  if (!storedState || state !== storedState) {
+const validateState = (
+  storedState: string | undefined,
+  state: string | undefined
+) => {
+  if (!storedState || !state || state !== storedState) {
     throw new Error('Invalid state parameter')
   }
 }
@@ -34,9 +37,9 @@ export default async function Home({
   const cookieStore = cookies()
   const storedState = cookieStore.get('slack_oauth_state')?.value
 
-  if (code && state) {
+  if (code) {
     try {
-      validateState(state, storedState)
+      validateState(storedState, state)
       access_token = await getAccessToken(code)
     } catch (e) {
       console.error(`An error occurred: ${e}`)
