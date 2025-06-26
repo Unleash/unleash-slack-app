@@ -17,6 +17,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en' className='bg-unleash-background'>
+      <head>
+        <meta name='slack-app-id' content='A05GLH2TPT3' />
+      </head>
       <body className={inter.className}>{children}</body>
     </html>
   )

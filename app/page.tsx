@@ -1,8 +1,9 @@
+import { cookies } from 'next/headers'
 import Image from 'next/image'
 import { Guide } from './components/Guide'
 import { Install } from './components/Install'
 
-async function getAccessToken(code: string) {
+const getAccessToken = async (code: string): Promise<string | undefined> => {
   const res = await fetch('https://slack.com/api/oauth.v2.access', {
     method: 'POST',
     headers: {
@@ -15,16 +16,30 @@ async function getAccessToken(code: string) {
   return access_token
 }
 
+const validateState = (
+  storedState: string | undefined,
+  state: string | undefined
+) => {
+  if (!storedState || !state || state !== storedState) {
+    throw new Error('Invalid state parameter')
+  }
+}
+
 export default async function Home({
-  searchParams: { code }
+  searchParams: { code, state }
 }: {
   searchParams: {
-    code: string
+    code?: string
+    state?: string
   }
 }) {
   let error, access_token
+  const cookieStore = cookies()
+  const storedState = cookieStore.get('slack_oauth_state')?.value
+
   if (code) {
     try {
+      validateState(storedState, state)
       access_token = await getAccessToken(code)
     } catch (e) {
       console.error(`An error occurred: ${e}`)
