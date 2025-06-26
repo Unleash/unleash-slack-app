@@ -50,7 +50,7 @@ export default async function Home({
   return (
     <main className='flex flex-col min-h-screen bg-unleash-background'>
       <header className='w-full p-4 flex flex-col sm:flex-row justify-between items-center'>
-        <Link href='https://www.getunleash.io/' target='_blank'>
+        <Link href='https://www.getunleash.io/' target='_blank' rel='noopener noreferrer'>
           <Image
             src='/unleash_pos.svg'
             alt='Unleash Logo'
