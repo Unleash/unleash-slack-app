@@ -5,9 +5,9 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Unleash Slack App',
+  title: 'Unleash App for Slack',
   description:
-    "Add Unleash to your Slack workspace by using Unleash's official Slack App."
+    "Add Unleash to your Slack workspace by using Unleash's official App for Slack."
 }
 
 export default function RootLayout({

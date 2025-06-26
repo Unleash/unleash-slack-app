@@ -1,6 +1,6 @@
-# Unleash Slack App
+# Unleash App for Slack
 
-Add Unleash to your Slack workspace by using Unleash's official Slack App.
+Add Unleash to your Slack workspace by using Unleash's official App for Slack.
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
