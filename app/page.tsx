@@ -26,15 +26,16 @@ const validateState = (
 }
 
 export default async function Home({
-  searchParams: { code, state }
+  searchParams
 }: {
-  searchParams: {
+  searchParams: Promise<{
     code?: string
     state?: string
-  }
+  }>
 }) {
+  const { code, state } = await searchParams
   let error, access_token
-  const cookieStore = cookies()
+  const cookieStore = await cookies()
   const storedState = cookieStore.get('slack_oauth_state')?.value
 
   if (code) {
