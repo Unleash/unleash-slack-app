@@ -1,3 +1,6 @@
+export const START_AGAIN =
+  'Start again from Unleash: Integrations, then App for Slack.'
+
 export const errorPage = (message: string) =>
   new Response(
     `<!doctype html><meta charset="utf-8"><title>Unleash App for Slack</title>

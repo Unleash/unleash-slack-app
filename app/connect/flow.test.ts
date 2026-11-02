@@ -1,11 +1,12 @@
 import { NextRequest } from 'next/server'
 import { expect, test } from 'vitest'
 import type { BrokerConfig } from './config'
-import { startConnection } from './flow'
+import { continueToSlack, startConnection } from './flow'
 import {
   PENDING_COOKIE,
   type PendingConnect,
-  decodePending
+  decodePending,
+  encodePending
 } from './pending'
 import { unleashKeyPair } from './test-keys'
 
@@ -28,7 +29,15 @@ const defaultPending: PendingConnect = {
   step: 'confirming'
 }
 
-const request = (path: string) => new NextRequest(`${config.publicUrl}${path}`)
+const confirmedPending: PendingConnect = { ...defaultPending, step: 'confirmed' }
+
+const request = (path: string, pending?: PendingConnect) =>
+  new NextRequest(
+    `${config.publicUrl}${path}`,
+    pending && {
+      headers: { cookie: `${PENDING_COOKIE}=${encodePending(pending, config)}` }
+    }
+  )
 
 const pendingSetBy = (response: Response) => {
   const value = response.headers
@@ -85,4 +94,33 @@ test.each([
 
   expect(response.status).toBe(400)
   expect(await response.text()).toContain(message)
+})
+
+test('sends a confirmed connection on to Slack', () => {
+  const response = continueToSlack(
+    request('/connect/continue?confirm=confirm-token-1', defaultPending),
+    { config }
+  )
+
+  const location = new URL(response.headers.get('location')!)
+  expect(`${location.origin}${location.pathname}`).toBe(
+    'https://slack.com/oauth/v2/authorize'
+  )
+  expect(Object.fromEntries(location.searchParams)).toEqual({
+    client_id: 'client-id',
+    scope: 'chat:write,chat:write.public',
+    redirect_uri: 'https://broker.example/callback',
+    state: 'slack-state-1'
+  })
+  expect(pendingSetBy(response)).toEqual(confirmedPending)
+})
+
+test.each([
+  ['another token', '/connect/continue?confirm=another-token', defaultPending],
+  ['no token', '/connect/continue', defaultPending],
+  ['no cookie', '/connect/continue?confirm=confirm-token-1', undefined]
+])('refuses a confirmation with %s', (_, path, pending) => {
+  const response = continueToSlack(request(path, pending), { config })
+
+  expect(response.status).toBe(400)
 })
