@@ -10,6 +10,7 @@ export interface BrokerConfig {
 
 export interface BrokerDeps {
   config: BrokerConfig
+  fetch: typeof fetch
   randomToken: () => string
 }
 
@@ -33,5 +34,6 @@ export const readConfig = (env: NodeJS.ProcessEnv): BrokerConfig => {
 // Read per request, not at import: builds for previews have no CLIENT_SECRET.
 export const brokerDeps = (): BrokerDeps => ({
   config: readConfig(process.env),
+  fetch,
   randomToken: () => randomBytes(24).toString('base64url')
 })

@@ -4,14 +4,22 @@ import { START_AGAIN, errorPage } from './error-page'
 import {
   PENDING_COOKIE,
   type PendingConnect,
+  clearedCookieOptions,
   cookieOptions,
   decodePending,
   encodePending,
   isUnleashState,
   parseReturnTo
 } from './pending'
-import { isSealingKey } from './seal'
-import { slackAuthorizeUrl } from './slack'
+import { isSealingKey, sealForInstance } from './seal'
+import {
+  SlackExchangeError,
+  type SlackConnection,
+  exchangeCode,
+  slackAuthorizeUrl
+} from './slack'
+
+export const UNLEASH_CONNECTED_PATH = '/integrations/connected/slack-app'
 
 // Started by an Unleash instance's Install & connect:
 // GET /connect?return_to&public_key&state
@@ -67,5 +75,65 @@ export const continueToSlack = (
     encodePending({ ...pending, step: 'confirmed' }, config),
     cookieOptions
   )
+  return response
+}
+
+const sealedConnection = async (
+  code: string,
+  pending: PendingConnect,
+  deps: Pick<BrokerDeps, 'config' | 'fetch'>
+): Promise<{ sealed: string } | { error: string }> => {
+  let connection: SlackConnection
+  try {
+    connection = await exchangeCode(code, deps)
+  } catch (error) {
+    if (!(error instanceof SlackExchangeError)) {
+      throw error
+    }
+    const cause = error.cause instanceof Error ? ` (${error.cause.name})` : ''
+    console.error(`Could not connect to Slack: ${error.slackError}${cause}`)
+    return { error: error.slackError }
+  }
+  try {
+    return { sealed: sealForInstance(pending.publicKey, connection) }
+  } catch (error) {
+    // Never the token: only that sealing failed, and the error's name.
+    console.error(`Could not seal the token: ${(error as Error).name}`)
+    return { error: 'sealing_failed' }
+  }
+}
+
+// Slack's redirect URL for Install & connect. Exchanges the code with the
+// client secret, seals the token to the instance's public key and sends the
+// admin back to Unleash with it in the fragment.
+export const finishConnection = async (
+  request: NextRequest,
+  deps: Pick<BrokerDeps, 'config' | 'fetch'>
+): Promise<Response> => {
+  const params = request.nextUrl.searchParams
+  const pending = decodePending(
+    request.cookies.get(PENDING_COOKIE)?.value,
+    deps.config
+  )
+  if (pending?.step !== 'confirmed' || params.get('state') !== pending.slackState) {
+    return errorPage(
+      `This connection has expired or was started in another browser. ${START_AGAIN}`
+    )
+  }
+
+  const code = params.get('code')
+  const outcome = code
+    ? await sealedConnection(code, pending, deps)
+    : { error: params.get('error') ?? 'no_code' }
+  const fragment = new URLSearchParams({
+    state: pending.unleashState,
+    ...outcome
+  })
+
+  const response = NextResponse.redirect(
+    `${pending.returnTo}${UNLEASH_CONNECTED_PATH}#${fragment}`,
+    302
+  )
+  response.cookies.set(PENDING_COOKIE, '', clearedCookieOptions)
   return response
 }
