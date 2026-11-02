@@ -24,6 +24,10 @@ export const cookieOptions = {
   maxAge: 60 * 60
 }
 
+// cookies.delete(name) drops Secure, and browsers ignore a __Host- cookie
+// without it, so clearing has to be a set that expires at once.
+export const clearedCookieOptions = { ...cookieOptions, maxAge: 0 }
+
 const LOCALHOSTS = ['localhost', '127.0.0.1', '[::1]']
 
 export const parseReturnTo = (
