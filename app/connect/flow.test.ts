@@ -96,9 +96,12 @@ test.each([
   expect(await response.text()).toContain(message)
 })
 
-test('sends a confirmed connection on to Slack', () => {
+test.each([
+  ['when the admin confirms', defaultPending],
+  ['again when the admin goes back and continues', confirmedPending]
+])('sends the connection on to Slack %s', (_, pending) => {
   const response = continueToSlack(
-    request('/connect/continue?confirm=confirm-token-1', defaultPending),
+    request('/connect/continue?confirm=confirm-token-1', pending),
     { config }
   )
 

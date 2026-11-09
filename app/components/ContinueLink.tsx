@@ -45,7 +45,11 @@ export const ContinueLink = ({ href }: IContinueLinkProps) => {
       Continue to Slack
     </a>
   ) : (
-    <span aria-disabled='true' className={`${className} opacity-50 cursor-wait`}>
+    <span
+      role='link'
+      aria-disabled='true'
+      className={`${className} opacity-50 cursor-wait`}
+    >
       Continue to Slack
     </span>
   )
