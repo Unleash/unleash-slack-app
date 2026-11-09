@@ -1,4 +1,3 @@
-import { generateKeyPairSync } from 'crypto'
 import { NextRequest } from 'next/server'
 import { expect, test } from 'vitest'
 import type { BrokerConfig } from './config'
@@ -8,12 +7,9 @@ import {
   type PendingConnect,
   decodePending
 } from './pending'
+import { unleashKeyPair } from './test-keys'
 
-// A key pair like the one Unleash makes for each connection.
-const keys = generateKeyPairSync('rsa', { modulusLength: 3072 })
-const publicKey = keys.publicKey
-  .export({ format: 'der', type: 'spki' })
-  .toString('base64url')
+const { publicKey } = unleashKeyPair()
 
 const config: BrokerConfig = {
   publicUrl: 'https://broker.example',
@@ -70,14 +66,9 @@ test('remembers a request from Unleash in a signed cookie and asks the admin to 
   expect(response.headers.get('set-cookie')).toContain('SameSite=lax')
 })
 
-const smallKey = () =>
-  generateKeyPairSync('rsa', { modulusLength: 2048 })
-    .publicKey.export({ format: 'der', type: 'spki' })
-    .toString('base64url')
-
 test.each([
   ['an address without https', { return_to: 'http://unleash.example' }, 'The address of your Unleash instance is not valid.'],
-  ['a 2048-bit key', { public_key: smallKey() }, 'The request from Unleash has no valid public key.'],
+  ['a 2048-bit key', { public_key: unleashKeyPair(2048).publicKey }, 'The request from Unleash has no valid public key.'],
   ['a short state', { state: 'short' }, 'The request from Unleash has no valid state.']
 ])('refuses a request from Unleash with %s', async (_, override, message) => {
   const params = new URLSearchParams({

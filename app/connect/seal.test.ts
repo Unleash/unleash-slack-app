@@ -1,17 +1,11 @@
-import { generateKeyPairSync } from 'crypto'
 import { expect, test } from 'vitest'
 import { isSealingKey } from './seal'
+import { unleashKeyPair } from './test-keys'
 
-// A key pair like the one Unleash makes for each connection.
-const keys = generateKeyPairSync('rsa', { modulusLength: 3072 })
-const publicKey = keys.publicKey
-  .export({ format: 'der', type: 'spki' })
-  .toString('base64url')
+const { publicKey } = unleashKeyPair()
 
 test('accepts only 3072-bit RSA keys as sealing keys', () => {
-  const smallKey = generateKeyPairSync('rsa', { modulusLength: 2048 })
-    .publicKey.export({ format: 'der', type: 'spki' })
-    .toString('base64url')
+  const smallKey = unleashKeyPair(2048).publicKey
 
   expect(isSealingKey(publicKey)).toBe(true)
   expect(isSealingKey(smallKey)).toBe(false)
