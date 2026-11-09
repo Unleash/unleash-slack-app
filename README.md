@@ -62,8 +62,8 @@ Unleash's side is `src/lib/addons/slack-app-install-service.ts` in [Unleash/unle
 | `return_to` | The instance's address: HTTPS, no credentials, query or fragment. Plain HTTP only on localhost under `next dev` | `parseReturnTo` |
 | `public_key` | A one-off 3072-bit RSA key, base64url SPKI DER | `isSealingKey` |
 | `state` | 8–200 of `A-Za-z0-9_.-`; Unleash sends the connection's id | `isUnleashState` |
-| Out | `302` to `return_to` + `/integrations/connected/slack-app#state=…&sealed=…`, or `#state=…&error=…` | `finishConnection` |
-| `sealed` | `{ accessToken, team: { id, name } }` as JSON, encrypted to `public_key` with RSA-OAEP and SHA-256, base64url; at most 318 bytes, so the workspace name is shortened to fit | `sealForInstance` |
+| Out | `302` to `return_to` + `/integrations/connected/slack-app#state=…&sealed_connection=…`, or `#state=…&error=…` | `finishConnection` |
+| `sealed_connection` | `{ accessToken, team: { id, name } }` as JSON, encrypted to `public_key` with RSA-OAEP and SHA-256, base64url; at most 318 bytes, so the workspace name is shortened to fit | `sealForInstance` |
 | `error` | Slack's error, such as `access_denied`, or the broker's own: `no_code`, `slack_unreachable`, `no_bot_token`, `unknown_error`, `sealing_failed` | `sealedConnection` |
 
 ### Production settings

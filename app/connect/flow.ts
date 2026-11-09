@@ -82,7 +82,7 @@ const sealedConnection = async (
   code: string,
   pending: PendingConnect,
   deps: Pick<BrokerDeps, 'config' | 'fetch'>
-): Promise<{ sealed: string } | { error: string }> => {
+): Promise<{ sealed_connection: string } | { error: string }> => {
   let connection: SlackConnection
   try {
     connection = await exchangeCode(code, deps)
@@ -95,7 +95,9 @@ const sealedConnection = async (
     return { error: error.slackError }
   }
   try {
-    return { sealed: sealForInstance(pending.publicKey, connection) }
+    return {
+      sealed_connection: sealForInstance(pending.publicKey, connection)
+    }
   } catch (error) {
     // Never the token: only that sealing failed, and the error's name.
     console.error(`Could not seal the token: ${(error as Error).name}`)

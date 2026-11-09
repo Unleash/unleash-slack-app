@@ -161,7 +161,7 @@ test('seals the token Slack issued and sends it to Unleash in the fragment, then
   )
   const fragment = fragmentOf(response)
   expect(fragment.get('state')).toBe('unleash-state-1')
-  expect(openAsUnleash(fragment.get('sealed')!)).toEqual({
+  expect(openAsUnleash(fragment.get('sealed_connection')!)).toEqual({
     accessToken: 'xoxb-the-token',
     team: { id: 'T1', name: 'Acme' }
   })
