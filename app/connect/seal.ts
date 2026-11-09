@@ -26,7 +26,8 @@ export const isSealingKey = (value: string): boolean => {
   }
 }
 
-// The workspace name only names the integration in Unleash, so it gives way.
+// Unleash only shows the workspace name, in the integration's description
+// ("Slack workspace Acme"), so it is shortened to make room for the token.
 const fitToSeal = (connection: SlackConnection): Buffer => {
   const name = Array.from(connection.team.name)
   for (let length = name.length; length >= 0; length--) {
