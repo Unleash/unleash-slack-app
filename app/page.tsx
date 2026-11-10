@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Guide } from './components/Guide'
 import { Install } from './components/Install'
+import { Version } from './components/Version'
 
 const getAccessToken = async (code: string): Promise<string | undefined> => {
   const res = await fetch('https://slack.com/api/oauth.v2.access', {
@@ -200,6 +201,9 @@ export default async function Home({
         >
           Privacy Policy
         </Link>
+        <p className='mt-1'>
+          Unleash App for Slack <Version />
+        </p>
       </footer>
     </main>
   )
