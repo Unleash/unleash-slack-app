@@ -19,7 +19,11 @@ Then, create a `.env.local` file with the following contents:
 NEXT_PUBLIC_SCOPE=your-client-scope # from: https://api.slack.com/apps/A05GLH2TPT3/oauth
 NEXT_PUBLIC_CLIENT_ID=your-client-id # from: https://api.slack.com/apps/A05GLH2TPT3/general
 CLIENT_SECRET=your-client-secret # from: https://api.slack.com/apps/A05GLH2TPT3/general
+# For Install & connect from Unleash:
+PUBLIC_URL=your-public-url # this site's HTTPS address, such as https://app-for-slack.getunleash.io
 ```
+
+`NEXT_PUBLIC_*` values are built into the pages, so set them before `next build`. Install & connect checks all four settings on each request, and fails with the name of any that is missing. Under `next dev` it also accepts an Unleash on `http://localhost`.
 
 Then, run the development server:
 
