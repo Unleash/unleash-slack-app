@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { expect, test } from 'vitest'
 import type { BrokerConfig } from './config'
-import { continueToSlack, startConnection } from './flow'
+import { continueToSlack, finishConnection, startConnection } from './flow'
 import {
   PENDING_COOKIE,
   type PendingConnect,
@@ -10,7 +10,7 @@ import {
 } from './pending'
 import { unleashKeyPair } from './test-keys'
 
-const { publicKey } = unleashKeyPair()
+const { publicKey, open: openAsUnleash } = unleashKeyPair()
 
 const config: BrokerConfig = {
   publicUrl: 'https://broker.example',
@@ -50,6 +50,21 @@ const counter = () => {
   let count = 0
   return () => `token-${++count}`
 }
+
+const slackAnswering = (answer: object | Error) => {
+  const calls: { url: string; init?: RequestInit }[] = []
+  const fetch = async (url: RequestInfo | URL, init?: RequestInit) => {
+    calls.push({ url: String(url), init })
+    if (answer instanceof Error) {
+      throw answer
+    }
+    return new Response(JSON.stringify(answer))
+  }
+  return { fetch: fetch as typeof globalThis.fetch, calls }
+}
+
+const fragmentOf = (response: Response) =>
+  new URLSearchParams(new URL(response.headers.get('location')!).hash.slice(1))
 
 test('remembers a request from Unleash in a signed cookie and asks the admin to confirm', () => {
   const params = new URLSearchParams({
@@ -126,4 +141,78 @@ test.each([
   const response = continueToSlack(request(path, pending), { config })
 
   expect(response.status).toBe(400)
+})
+
+test('seals the token Slack issued and sends it to Unleash in the fragment, then forgets the connection', async () => {
+  const slack = slackAnswering({
+    ok: true,
+    token_type: 'bot',
+    access_token: 'xoxb-the-token',
+    team: { id: 'T1', name: 'Acme' }
+  })
+
+  const response = await finishConnection(
+    request('/callback?code=the-code&state=slack-state-1', confirmedPending),
+    { config, fetch: slack.fetch }
+  )
+
+  expect(response.headers.get('location')).toMatch(
+    /^https:\/\/unleash\.example\/acme\/integrations\/connected\/slack-app#/
+  )
+  const fragment = fragmentOf(response)
+  expect(fragment.get('state')).toBe('unleash-state-1')
+  expect(openAsUnleash(fragment.get('sealed_connection')!)).toEqual({
+    accessToken: 'xoxb-the-token',
+    team: { id: 'T1', name: 'Acme' }
+  })
+  expect(slack.calls).toMatchObject([
+    {
+      url: 'https://slack.com/api/oauth.v2.access',
+      init: {
+        headers: {
+          Authorization: `Basic ${Buffer.from('client-id:client-secret').toString('base64')}`
+        }
+      }
+    }
+  ])
+  expect(
+    Object.fromEntries(slack.calls[0].init!.body as URLSearchParams)
+  ).toEqual({ code: 'the-code', redirect_uri: 'https://broker.example/callback' })
+  expect(response.headers.get('set-cookie')).toMatch(
+    new RegExp(`^${PENDING_COOKIE}=;.*Max-Age=0.*Secure`)
+  )
+})
+
+test.each([
+  ['access_denied', '/callback?error=access_denied&state=slack-state-1', { ok: true }],
+  ['invalid_code', '/callback?code=the-code&state=slack-state-1', { ok: false, error: 'invalid_code' }],
+  ['no_bot_token', '/callback?code=the-code&state=slack-state-1', { ok: true, token_type: 'user', access_token: 'xoxp-a-user-token', team: { id: 'T1', name: 'Acme' } }],
+  ['slack_unreachable', '/callback?code=the-code&state=slack-state-1', new TypeError('fetch failed')],
+  ['sealing_failed', '/callback?code=the-code&state=slack-state-1', { ok: true, token_type: 'bot', access_token: `xoxb-${'1'.repeat(400)}`, team: { id: 'T1', name: 'Acme' } }]
+])('tells Unleash why the connection failed: %s', async (error, path, answer) => {
+  const response = await finishConnection(request(path, confirmedPending), {
+    config,
+    fetch: slackAnswering(answer).fetch
+  })
+
+  expect(Object.fromEntries(fragmentOf(response))).toEqual({
+    state: 'unleash-state-1',
+    error
+  })
+})
+
+test.each([
+  ['before the admin confirmed', '/callback?code=the-code&state=slack-state-1', defaultPending],
+  ['with another state', '/callback?code=the-code&state=another-state', confirmedPending],
+  ['without the cookie', '/callback?code=the-code&state=slack-state-1', undefined]
+])('refuses a return from Slack %s', async (_, path, pending) => {
+  const slack = slackAnswering({ ok: true })
+
+  const response = await finishConnection(request(path, pending), {
+    config,
+    fetch: slack.fetch
+  })
+
+  expect(response.status).toBe(400)
+  expect(slack.calls).toEqual([])
 })
