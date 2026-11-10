@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Guide } from './components/Guide'
 import { Install } from './components/Install'
+import { Version } from './components/Version'
 
 const getAccessToken = async (code: string): Promise<string | undefined> => {
   const res = await fetch('https://slack.com/api/oauth.v2.access', {
@@ -26,15 +27,16 @@ const validateState = (
 }
 
 export default async function Home({
-  searchParams: { code, state }
+  searchParams
 }: {
-  searchParams: {
+  searchParams: Promise<{
     code?: string
     state?: string
-  }
+  }>
 }) {
+  const { code, state } = await searchParams
   let error, access_token
-  const cookieStore = cookies()
+  const cookieStore = await cookies()
   const storedState = cookieStore.get('slack_oauth_state')?.value
 
   if (code) {
@@ -199,6 +201,9 @@ export default async function Home({
         >
           Privacy Policy
         </Link>
+        <p className='mt-1'>
+          Unleash App for Slack <Version />
+        </p>
       </footer>
     </main>
   )
