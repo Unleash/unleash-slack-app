@@ -45,7 +45,7 @@ Unleash connects to Slack without anyone copying the token:
 
 1. Unleash keeps the pending connection and sends the admin to `/connect` with its own address (`return_to`), a one-off 3072-bit RSA public key (`public_key`) and the connection's id (`state`).
 2. `/connect/confirm` shows where the token will go. Continuing records the confirmation in the `__Host-slack_connect` cookie and sends the admin to Slack. The cookie is signed with a key derived from `CLIENT_SECRET`, and the Continue button only works once the page has been in front, with focus, for a moment.
-3. Slack sends the admin back to `/callback`, which refuses a connection that wasn't confirmed. It exchanges the code with `CLIENT_SECRET`, seals the token to the public key (RSA-OAEP with SHA-256, Node's `publicEncrypt`, which fits at most 318 bytes; the workspace name is shortened to fit) and sends the admin to `return_to` + `/integrations/connected/slack-app`, with the state and the sealed token in the URL fragment.
+3. Slack sends the admin back to `/callback`, which refuses a connection that wasn't confirmed. It exchanges the code with `CLIENT_SECRET`, seals the token to the public key (RSA-OAEP with SHA-256, Node's `publicEncrypt`, which fits at most 318 bytes) and sends the admin to `return_to` + `/integrations/connected/slack-app`, with the state and the sealed token in the URL fragment.
 4. That Unleash page posts them to the instance, which opens the token with the connection's private key, saves the integration and deletes the connection.
 
 This site stores nothing. The token only exists in `/callback`'s memory between the exchange and the sealing. The browser only sees ciphertext, and the fragment keeps even that out of every server and proxy log.
@@ -63,7 +63,7 @@ Unleash's side is `src/lib/addons/slack-app-install-service.ts` in [Unleash/unle
 | `public_key` | A one-off 3072-bit RSA key, base64url SPKI DER | `isSealingKey` |
 | `state` | 8–200 of `A-Za-z0-9_.-`; Unleash sends the connection's id | `isUnleashState` |
 | Out | `302` to `return_to` + `/integrations/connected/slack-app#state=…&sealed_connection=…`, or `#state=…&error=…` | `finishConnection` |
-| `sealed_connection` | `{ accessToken, team: { id, name } }` as JSON, encrypted to `public_key` with RSA-OAEP and SHA-256, base64url; at most 318 bytes, so the workspace name is shortened to fit | `sealForInstance` |
+| `sealed_connection` | `{ accessToken, team: { id, name } }` as JSON, encrypted to `public_key` with RSA-OAEP and SHA-256, base64url; at most 318 bytes | `sealForInstance` |
 | `error` | Slack's error, such as `access_denied`, or the broker's own: `no_code`, `slack_unreachable`, `no_bot_token`, `unknown_error`, `sealing_failed` | `sealedConnection` |
 
 ### Production settings

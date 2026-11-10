@@ -1,6 +1,8 @@
 import type { BrokerConfig, BrokerDeps } from './config'
 import type { PendingConnect } from './pending'
 
+const SLACK_URL = 'https://slack.com'
+
 export interface SlackConnection {
   accessToken: string
   team: { id: string; name: string }
@@ -27,7 +29,7 @@ export const slackAuthorizeUrl = (
   { slackState }: Pick<PendingConnect, 'slackState'>,
   config: BrokerConfig
 ): string => {
-  const url = new URL('https://slack.com/oauth/v2/authorize')
+  const url = new URL(`${SLACK_URL}/oauth/v2/authorize`)
   url.searchParams.set('client_id', config.clientId)
   url.searchParams.set('scope', config.scope)
   url.searchParams.set('redirect_uri', redirectUri(config))
@@ -41,7 +43,7 @@ export const exchangeCode = async (
 ): Promise<SlackConnection> => {
   let result: OAuthV2AccessResponse
   try {
-    const res = await fetch('https://slack.com/api/oauth.v2.access', {
+    const res = await fetch(`${SLACK_URL}/api/oauth.v2.access`, {
       method: 'POST',
       headers: {
         Authorization: `Basic ${Buffer.from(

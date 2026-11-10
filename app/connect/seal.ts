@@ -26,33 +26,20 @@ export const isSealingKey = (value: string): boolean => {
   }
 }
 
-// Unleash only shows the workspace name, in the integration's description
-// ("Slack workspace Acme"), so it is shortened to make room for the token.
-const fitToSeal = (connection: SlackConnection): Buffer => {
-  const name = Array.from(connection.team.name)
-  for (let length = name.length; length >= 0; length--) {
-    const payload = Buffer.from(
-      JSON.stringify({
-        ...connection,
-        team: { ...connection.team, name: name.slice(0, length).join('') }
-      })
-    )
-    if (payload.length <= MAX_SEALED_BYTES) {
-      return payload
-    }
-  }
-  throw new Error(`The token alone takes more than ${MAX_SEALED_BYTES} bytes`)
-}
-
 export const sealForInstance = (
   publicKey: string,
   connection: SlackConnection
-): string =>
-  publicEncrypt(
+): string => {
+  const payload = Buffer.from(JSON.stringify(connection))
+  if (payload.length > MAX_SEALED_BYTES) {
+    throw new Error(`The connection takes more than ${MAX_SEALED_BYTES} bytes`)
+  }
+  return publicEncrypt(
     {
       key: rsaPublicKey(publicKey),
       padding: constants.RSA_PKCS1_OAEP_PADDING,
       oaepHash: 'sha256'
     },
-    fitToSeal(connection)
+    payload
   ).toString('base64url')
+}

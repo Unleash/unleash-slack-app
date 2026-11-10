@@ -15,17 +15,15 @@ test('seals what Unleash opens', () => {
   expect(openAsUnleash(sealed)).toEqual(connection)
 })
 
-test('shortens a workspace name that would not fit', () => {
+test('refuses a workspace name too long to seal', () => {
   const connection = {
     accessToken: `xoxb-${'1'.repeat(70)}`,
     team: { id: 'T0123456789', name: 'Acme '.repeat(100) }
   }
 
-  const opened = openAsUnleash(sealForInstance(publicKey, connection))
-
-  expect(opened.accessToken).toBe(connection.accessToken)
-  expect(connection.team.name.startsWith(opened.team.name)).toBe(true)
-  expect(opened.team.name.length).toBeGreaterThan(0)
+  expect(() => sealForInstance(publicKey, connection)).toThrow(
+    'The connection takes more than 318 bytes'
+  )
 })
 
 test('accepts only 3072-bit RSA keys as sealing keys', () => {
