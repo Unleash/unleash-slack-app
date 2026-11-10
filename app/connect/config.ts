@@ -22,8 +22,9 @@ export const readConfig = (env: NodeJS.ProcessEnv): BrokerConfig => {
     }
     return value
   }
+  const publicUrl = env.PUBLIC_URL || 'https://app-for-slack.getunleash.io'
   return {
-    publicUrl: required('PUBLIC_URL').replace(/\/+$/, ''),
+    publicUrl: publicUrl.replace(/\/+$/, ''),
     clientId: required('NEXT_PUBLIC_CLIENT_ID'),
     clientSecret: required('CLIENT_SECRET'),
     scope: required('NEXT_PUBLIC_SCOPE'),
