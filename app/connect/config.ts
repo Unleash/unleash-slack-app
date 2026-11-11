@@ -24,14 +24,14 @@ export const readConfig = (env: NodeJS.ProcessEnv): BrokerConfig => {
   }
   return {
     publicUrl: required('PUBLIC_URL').replace(/\/+$/, ''),
-    clientId: required('NEXT_PUBLIC_CLIENT_ID'),
-    clientSecret: required('CLIENT_SECRET'),
+    clientId: required('NEXT_PUBLIC_REDIRECT_FLOW_CLIENT_ID'),
+    clientSecret: required('REDIRECT_FLOW_CLIENT_SECRET'),
     scope: required('NEXT_PUBLIC_SCOPE'),
     allowLocalhostHttp: env.NODE_ENV === 'development'
   }
 }
 
-// Read per request, not at import: builds for previews have no CLIENT_SECRET.
+// Read per request, not at import: builds for previews have no REDIRECT_FLOW_CLIENT_SECRET.
 export const brokerDeps = (): BrokerDeps => ({
   config: readConfig(process.env),
   fetch,

@@ -5,7 +5,7 @@ export async function GET() {
   const state = randomUUID()
 
   const redirectUrl = new URL('https://slack.com/oauth/v2/authorize')
-  redirectUrl.searchParams.set('client_id', process.env.NEXT_PUBLIC_SELF_HOSTED_CLIENT_ID!)
+  redirectUrl.searchParams.set('client_id', process.env.NEXT_PUBLIC_CLIENT_ID!)
   redirectUrl.searchParams.set('scope', process.env.NEXT_PUBLIC_SCOPE!)
   redirectUrl.searchParams.set('state', state)
 
