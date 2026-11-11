@@ -2,7 +2,6 @@ import { cookies } from 'next/headers'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Guide } from './components/Guide'
-import { Install } from './components/Install'
 import { Version } from './components/Version'
 
 const getAccessToken = async (code: string): Promise<string | undefined> => {
@@ -90,12 +89,12 @@ export default async function Home({
             </div>
           </div>
 
-          <div className='flex justify-center mt-6 mb-8'>
-            {access_token ? <Guide access_token={access_token} /> : <Install />}
-          </div>
-
-          {!access_token && (
-            <div className='text-gray-300 text-sm leading-relaxed'>
+          {access_token ? (
+            <div className='flex justify-center mt-6 mb-8'>
+              <Guide access_token={access_token} />
+            </div>
+          ) : (
+            <div className='text-gray-300 text-sm leading-relaxed mt-6'>
               <p>
                 The Unleash App for Slack brings real-time feature flag updates
                 and change notifications directly to your Slack workspace,
@@ -136,21 +135,41 @@ export default async function Home({
 
       <section className='w-full text-gray-800 px-4'>
         <div className='max-w-3xl mx-auto text-sm'>
-          <h2 className='text-xl font-semibold mt-4 mb-2'>How to set it up</h2>
-          <ol className='list-decimal list-inside space-y-1'>
-            <li>Click &quot;Add to Slack&quot; and select your workspace</li>
-            <li>
-              After installation, copy the access token shown on this page
-            </li>
-            <li>
-              Go to <code>Unleash → Integrations → App for Slack</code> in the
-              admin UI
-            </li>
-            <li>
-              Paste your access token into the integration settings and select
-              the events you&apos;d like to be notified about
-            </li>
-          </ol>
+          {!access_token && (
+            <>
+              <h2 className='text-xl font-semibold mt-4 mb-2'>
+                How to set it up
+              </h2>
+              <p className='mb-2'>
+                You connect Slack from inside Unleash, so there is nothing to
+                install from this page.
+              </p>
+              <ol className='list-decimal list-inside space-y-1'>
+                <li>
+                  In Unleash, go to <b>Integrations</b>
+                </li>
+                <li>
+                  Find <b>App for Slack</b> and click <b>Configure</b>
+                </li>
+                <li>
+                  Click <b>Install &amp; connect</b>
+                </li>
+                <li>
+                  Check that the address shown is your Unleash instance, then
+                  continue to Slack
+                </li>
+                <li>
+                  Select the Slack workspace you want to connect and click{' '}
+                  <b>Allow</b>
+                </li>
+                <li>
+                  Back in Unleash, the integration is connected. Choose the
+                  events you want to be notified about and the channels to
+                  post them to, then click <b>Update</b>
+                </li>
+              </ol>
+            </>
+          )}
 
           <h3 className='text-lg font-medium mt-6 mb-2'>
             Additional configuration details
