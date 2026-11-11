@@ -95,12 +95,7 @@ export default async function Home({
             </div>
           ) : (
             <div className='text-gray-300 text-sm leading-relaxed mt-6'>
-              <p>
-                The Unleash App for Slack brings real-time feature flag updates
-                and change notifications directly to your Slack workspace,
-                helping teams stay in sync and move faster.
-              </p>
-              <h2 className='text-lg text-white font-semibold mt-4 mb-2'>
+              <h2 className='text-lg text-white font-semibold mb-2'>
                 How it works
               </h2>
               <ul className='list-disc list-inside space-y-1'>
@@ -141,8 +136,7 @@ export default async function Home({
                 How to set it up
               </h2>
               <p className='mb-2'>
-                You connect Slack from inside Unleash, so there is nothing to
-                install from this page.
+                You connect Slack from inside your Unleash instance. Just follow these steps:
               </p>
               <ol className='list-decimal list-inside space-y-1'>
                 <li>
