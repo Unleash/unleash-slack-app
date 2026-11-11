@@ -16,14 +16,17 @@ Then, create a `.env.local` file with the following contents:
 
 ```bash
 # .env.local
-NEXT_PUBLIC_SCOPE=your-client-scope # from: https://api.slack.com/apps/A05GLH2TPT3/oauth
+NEXT_PUBLIC_SCOPE=your-client-scope # both Slack apps request the same scopes
+# The copy-the-token page (`/install` and `/`), on the Slack app for self-hosted Unleash:
+NEXT_PUBLIC_SELF_HOSTED_CLIENT_ID=your-self-hosted-client-id
+SELF_HOSTED_CLIENT_SECRET=your-self-hosted-client-secret
+# Install & connect from Unleash (see below), on the listed Slack app:
 NEXT_PUBLIC_CLIENT_ID=your-client-id # from: https://api.slack.com/apps/A05GLH2TPT3/general
 CLIENT_SECRET=your-client-secret # from: https://api.slack.com/apps/A05GLH2TPT3/general
-# For Install & connect from Unleash (see below):
 PUBLIC_URL=your-public-url # this site's HTTPS address, such as https://app-for-slack.getunleash.io
 ```
 
-`NEXT_PUBLIC_*` values are built into the pages, so set them before `next build`. Install & connect checks all four settings on each request, and fails with the name of any that is missing. Under `next dev` it also accepts an Unleash on `http://localhost`.
+`NEXT_PUBLIC_*` values are built into the pages, so set them before `next build`. Install & connect checks its three settings and the scope on each request, and fails with the name of any that is missing. Under `next dev` it also accepts an Unleash on `http://localhost`.
 
 Then, run the development server:
 
@@ -68,8 +71,8 @@ Unleash's side is `src/lib/addons/slack-app-install-service.ts` in [Unleash/unle
 
 ### Production settings
 
-- `CLIENT_SECRET` only in Vercel's Production environment. The repository is public, so preview builds of pull requests must never see it.
-- In the Slack app, only `${PUBLIC_URL}/callback` as a redirect URL once the copy-the-token page is gone.
+- `CLIENT_SECRET` and `SELF_HOSTED_CLIENT_SECRET` only in Vercel's Production environment. The repository is public, so preview builds of pull requests must never see them.
+- In the listed Slack app, only `${PUBLIC_URL}/callback` as a redirect URL.
 
 ## Learn More
 

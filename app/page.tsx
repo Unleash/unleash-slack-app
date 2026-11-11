@@ -11,7 +11,7 @@ const getAccessToken = async (code: string): Promise<string | undefined> => {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
-    body: `client_id=${process.env.NEXT_PUBLIC_CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}&code=${code}`
+    body: `client_id=${process.env.NEXT_PUBLIC_SELF_HOSTED_CLIENT_ID}&client_secret=${process.env.SELF_HOSTED_CLIENT_SECRET}&code=${code}`
   })
   const { access_token } = await res.json()
   return access_token
